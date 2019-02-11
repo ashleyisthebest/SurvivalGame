@@ -5,6 +5,9 @@ import java.util.Scanner;
 
 public class SurvivalGame {
 
+    public static Characters selectedChar = new Characters("", 0, 0, 0);
+    public static Characters john = new Characters("john", 1, 1, 5);
+    public static Characters jeff = new Characters("jeff", 1, 1, 5);
     public static Items food = new Items("food", 0);
     public static Items bricks = new Items("bricks", 0);
     public static Stats citySize = new Stats("citySize", 0);
@@ -16,6 +19,7 @@ public class SurvivalGame {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         intro();
+        charSelection();
         while (true) {
             mainScreen();
         }
@@ -27,15 +31,37 @@ public class SurvivalGame {
         System.out.println("- Type in 'info' to see items and stats.");
         System.out.println("- Type 'build' to build new structures.");
         System.out.println("- Press enter to get more bricks.");
+        System.out.println("- Different characters have different building costs and get different amounts of bricks.");
         System.out.println("- Good luck.");
         System.out.println("");
+    }
+
+    public static void charSelection() {
+        System.out.println("-- Character Selection --");
+        System.out.println("1. John | Bricks Multiplier: 1 | Cost Multiplier: 1 | Residents Multiplier: 5");
+        System.out.println("2. Jeff | Bricks Multiplier: 3 | Cost Multiplier: 2 | Residents Multiplier: 1");
+        System.out.println("Enter a number to select your character.");
+        int selection = input.nextInt();
+        if (selection == 1) {
+            selectedChar.setName("John");
+            selectedChar.setBricksPerCycle(1);
+            selectedChar.setCostMultiplier(1);
+            selectedChar.setResidentMultiplier(5);
+        } else if (selection == 2) {
+            selectedChar.setName("Jeff");
+            selectedChar.setBricksPerCycle(3);
+            selectedChar.setCostMultiplier(2);
+            selectedChar.setResidentMultiplier(1);
+        }
+
+        bricksPerCycle.setValue(2 * selectedChar.getBricksPerCycle());
+
     }
 
     public static void mainScreen() throws IOException, InterruptedException {
 
         String enter = input.nextLine();
         if (enter.isEmpty()) {
-            cycleChecker();
             getBricks();
         } else if (enter.equals("info")) {
             info();
@@ -53,10 +79,6 @@ public class SurvivalGame {
         System.out.println("");
     }
 
-    public static void cycleChecker(){
-        bricksPerCycle.setValue((residents.getValue()*5)+1);
-    }
-    
     public static void info() {
         System.out.println("");
         System.out.println("--Items--");
@@ -81,18 +103,21 @@ public class SurvivalGame {
                 citySize.setValue(totalCitySize += 1);
                 bricks.setValue(totalBricks - 20);
                 residents.setValue(totalResidents += 1);
+                bricksPerCycle.setValue(bricksPerCycle.getValue() + 1);
                 System.out.println("Hut built!");
             } else if (choice == 2 && bricks.getValue() >= 100) {
                 int totalCitySize = citySize.getValue();
                 citySize.setValue(totalCitySize += 5);
                 bricks.setValue(totalBricks - 100);
                 residents.setValue(totalResidents += 5);
+                bricksPerCycle.setValue(bricksPerCycle.getValue() + 5);
                 System.out.println("House built!");
             } else if (choice == 3 && bricks.getValue() >= 500) {
                 int totalCitySize = citySize.getValue();
                 citySize.setValue(totalCitySize += 25);
                 bricks.setValue(totalBricks - 500);
                 residents.setValue(totalResidents += 20);
+                bricksPerCycle.setValue(bricksPerCycle.getValue() + 20);
                 System.out.println("Mansion built!");
             } else {
                 System.out.println("Invalid option.");
